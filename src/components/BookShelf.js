@@ -19,7 +19,7 @@ class BookShelf extends Component {
                             <Book key={index}
                                   title={book.title}
                                   author={book.authors}
-                                  imageURL={book.imageURL}/>
+                                  imageLinks={book.imageLinks}/>
                         ))}
                     </ol>
                 </div>

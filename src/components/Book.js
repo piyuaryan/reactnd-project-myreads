@@ -3,7 +3,7 @@ import {PropTypes} from "prop-types";
 
 class Book extends Component {
     static propTypes = {
-        imageURL: PropTypes.string.isRequired,
+        imageLinks: PropTypes.object.isRequired,
         title: PropTypes.string.isRequired,
         author: PropTypes.array
     };
@@ -16,7 +16,7 @@ class Book extends Component {
                         <div className="book-cover" style={{
                             width: 128,
                             height: 193,
-                            backgroundImage: `url("${this.props.imageURL}")`
+                            backgroundImage: `url("${this.props.imageLinks.thumbnail}")`
                         }}></div>
                         <div className="book-shelf-changer">
                             <select>

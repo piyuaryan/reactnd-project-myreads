@@ -1,25 +1,24 @@
 import React, {Component} from "react";
-// import * as BooksAPI from './utils/BooksAPI'
 import "./App.css";
 import {Link, Route} from "react-router-dom";
-import BookShelf from "./components/BookShelf";
+import * as BooksAPI from "./utils/BooksAPI";
+import BookList from "./components/BookList";
 
 class BooksApp extends Component {
 
-    render() {
-        const book1 = {
-            title: "To Kill a Mockingbird",
-            authors: ["Harper Lee"],
-            imageURL: "http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api"
-        };
-        const book2 = {
-            title: "To Kill a Mockingbird2",
-            authors: ["Harper Lee2"],
-            imageURL: "http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api"
-        };
-        const currentlyReading = [book1, book2];
-        console.log(currentlyReading);
+    state = {
+        books: []
+    };
 
+    componentDidMount() {
+        this.fetchAllBooks()
+    }
+
+    fetchAllBooks = () => {
+        BooksAPI.getAll().then((books) => this.setState({books}))
+    };
+
+    render() {
         return (
             <div className="app">
 
@@ -51,15 +50,9 @@ class BooksApp extends Component {
                         <div className="list-books-title">
                             <h1>MyReads</h1>
                         </div>
-                        <div className="list-books-content">
-                            <div>
-                                <BookShelf title="Currently Reading" books={currentlyReading}/>
 
-                                <BookShelf title="Want to Read" books={currentlyReading}/>
+                        <BookList books={this.state.books}/>
 
-                                <BookShelf title="Read" books={currentlyReading}/>
-                            </div>
-                        </div>
                         <div className="open-search">
                             <Link
                                 to="/create">Add a book</Link>
