@@ -6,6 +6,7 @@ import Book from "./Book";
 
 class BookSearch extends Component {
     static propTypes = {
+        myBooks: PropTypes.array.isRequired,
         onMoveToShelf: PropTypes.func.isRequired
     };
 
@@ -20,15 +21,43 @@ class BookSearch extends Component {
         this.searchBook(searchTerm);
     };
 
+    /**
+     * @description  Do not show books that are already in user's shelves
+     */
+    filterResults = (searchedBooks) => {
+        if (this.props.myBooks && searchedBooks) {
+            return searchedBooks.filter((searchedBook) => {
+                for (let i = 0; i < this.props.myBooks.length; i++) {
+                    if (this.props.myBooks[i].id === searchedBook.id) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+        } else {
+            return searchedBooks;
+        }
+    };
+
     searchBook = (searchTerm) => {
-        console.log("Fire Search: " + searchTerm);
         if (searchTerm && searchTerm.trim() !== '') {
             BooksAPI.search(searchTerm, 10).then((books) => {
-                if (books !== undefined) {
-                    this.setState({newBooks: books})
+                if (books !== undefined && !books.hasOwnProperty("error")) {
+                    // Remove the book if already in UserShelve
+                    books = this.filterResults(books);
+                    this.setState({newBooks: books});
                 }
             })
         }
+    };
+
+    /**
+     * @description Once the searched Book is moved to any of the users shelves, remove from the search results.
+     */
+    onMoveToShelf = (bookToBeMoved, shelf) => {
+        this.props.onMoveToShelf(bookToBeMoved, shelf);
+        this.setState({newBooks: this.state.newBooks.filter((book) => book.id !== bookToBeMoved.id)});
+
     };
 
     render() {
@@ -58,9 +87,9 @@ class BookSearch extends Component {
                                 title={book.title}
                                 authors={book.authors}
                                 imageLinks={book.imageLinks}
-                                shelf="none"
+                                shelf={book.shelf ? book.shelf : "none"}
                                 onMoveToShelf={(shelf) => {
-                                    this.props.onMoveToShelf(book, shelf)
+                                    this.onMoveToShelf(book, shelf)
                                 }}/>
                         ))}
                     </ol>

@@ -21,6 +21,7 @@ class BooksApp extends Component {
 
     moveToShelf = (book, shelf) => {
         BooksAPI.update(book, shelf).then(() => {
+            alert("Book moved to : " + shelf);
             this.fetchAllBooks();
         })
     };
@@ -31,6 +32,7 @@ class BooksApp extends Component {
 
                 <Route path="/create" render={({history}) => (
                     <BookSearch
+                        myBooks={this.state.books}
                         onMoveToShelf={(book, shelf) => {
                             this.moveToShelf(book, shelf);
                         }}/>
