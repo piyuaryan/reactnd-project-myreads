@@ -5,7 +5,7 @@ class Book extends Component {
     static propTypes = {
         imageLinks: PropTypes.object.isRequired,
         title: PropTypes.string.isRequired,
-        author: PropTypes.array,
+        authors: PropTypes.array,
         shelf: PropTypes.string.isRequired,
         onMoveToShelf: PropTypes.func.isRequired
     };
@@ -39,7 +39,7 @@ class Book extends Component {
                         </div>
                     </div>
                     <div className="book-title">{this.props.title}</div>
-                    {this.props.author.map((author, index) => (
+                    {this.props.authors && this.props.authors.map((author, index) => (
                         <div
                             key={index}
                             className="book-authors">

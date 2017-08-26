@@ -20,7 +20,7 @@ class BookShelf extends Component {
                             <Book
                                 key={index}
                                 title={book.title}
-                                author={book.authors}
+                                authors={book.authors}
                                 imageLinks={book.imageLinks}
                                 shelf={book.shelf}
                                 onMoveToShelf={(shelf) => {

@@ -30,7 +30,10 @@ class BooksApp extends Component {
             <div className="app">
 
                 <Route path="/create" render={({history}) => (
-                    <BookSearch/>
+                    <BookSearch
+                        onMoveToShelf={(book, shelf) => {
+                            this.moveToShelf(book, shelf);
+                        }}/>
                 )}/>
 
                 <Route exact path="/" render={() => (

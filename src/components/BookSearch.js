@@ -1,13 +1,34 @@
 import React, {Component} from "react";
+import {PropTypes} from "prop-types";
 import {Link} from "react-router-dom";
+import * as BooksAPI from "../utils/BooksAPI";
+import Book from "./Book";
 
 class BookSearch extends Component {
+    static propTypes = {
+        onMoveToShelf: PropTypes.func.isRequired
+    };
+
     state = {
-        searchTerm: ""
+        searchTerm: "",
+        newBooks: []
     };
 
     changeSearchTerm = (e) => {
-        this.setState({searchTerm: e.target.value});
+        const searchTerm = e.target.value;
+        this.setState({searchTerm: searchTerm});
+        this.searchBook(searchTerm);
+    };
+
+    searchBook = (searchTerm) => {
+        console.log("Fire Search: " + searchTerm);
+        if (searchTerm && searchTerm.trim() !== '') {
+            BooksAPI.search(searchTerm, 10).then((books) => {
+                if (books !== undefined) {
+                    this.setState({newBooks: books})
+                }
+            })
+        }
     };
 
     render() {
@@ -29,7 +50,20 @@ class BookSearch extends Component {
                     </div>
                 </div>
                 <div className="search-books-results">
-                    <ol className="books-grid"></ol>
+                    <ol className="books-grid">
+                        {this.state.newBooks.length > 0 && this.state.newBooks.map((book, index) => (
+
+                            <Book
+                                key={index}
+                                title={book.title}
+                                authors={book.authors}
+                                imageLinks={book.imageLinks}
+                                shelf="none"
+                                onMoveToShelf={(shelf) => {
+                                    this.props.onMoveToShelf(book, shelf)
+                                }}/>
+                        ))}
+                    </ol>
                 </div>
             </div>
         )
