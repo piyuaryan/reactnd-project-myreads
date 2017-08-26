@@ -18,6 +18,12 @@ class BooksApp extends Component {
         BooksAPI.getAll().then((books) => this.setState({books}))
     };
 
+    moveToShelf = (book, shelf) => {
+        BooksAPI.update(book, shelf).then(() => {
+            this.fetchAllBooks();
+        })
+    };
+
     render() {
         return (
             <div className="app">
@@ -51,11 +57,17 @@ class BooksApp extends Component {
                             <h1>MyReads</h1>
                         </div>
 
-                        <BookList books={this.state.books}/>
+                        <BookList
+                            books={this.state.books}
+                            onMoveToShelf={(book, shelf) => {
+                                this.moveToShelf(book, shelf);
+                            }}/>
 
                         <div className="open-search">
                             <Link
-                                to="/create">Add a book</Link>
+                                to="/create">
+                                Add a book
+                            </Link>
                         </div>
                     </div>
                 )}/>
