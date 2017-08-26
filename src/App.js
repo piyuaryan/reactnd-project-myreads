@@ -4,11 +4,20 @@ import {Link, Route} from "react-router-dom";
 import * as BooksAPI from "./utils/BooksAPI";
 import BookList from "./components/BookList";
 import BookSearch from "./components/BookSearch";
+import {Alert, Button} from "react-bootstrap";
 
 class BooksApp extends Component {
 
     state = {
-        books: []
+        books: [],
+        alertVisible: false,
+        alertText: ''
+    };
+
+    shelves = {
+        currentlyReading: "Currently Reading",
+        wantToRead: "Want to Read",
+        read: "Read"
     };
 
     componentDidMount() {
@@ -21,14 +30,30 @@ class BooksApp extends Component {
 
     moveToShelf = (book, shelf) => {
         BooksAPI.update(book, shelf).then(() => {
-            alert("Book moved to : " + shelf);
+            this.setState({
+                alertText: `Book moved to ${this.shelves[shelf]}`
+            });
+            this.handleAlertShow();
             this.fetchAllBooks();
         })
+    };
+
+    handleAlertDismiss = () => {
+        this.setState({alertVisible: false});
+    };
+
+    handleAlertShow = () => {
+        this.setState({alertVisible: true});
     };
 
     render() {
         return (
             <div className="app">
+                {this.state.alertVisible ? (
+                    <Alert bsStyle="success" closeLabel="close">
+                        <span>{this.state.alertText}   </span>
+                        <Button bsStyle="link" onClick={this.handleAlertDismiss}>&times;</Button>
+                    </Alert>) : ""}
 
                 <Route path="/create" render={({history}) => (
                     <BookSearch
