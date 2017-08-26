@@ -22,29 +22,33 @@ class BookSearch extends Component {
     };
 
     /**
-     * @description  Do not show books that are already in user's shelves
+     * @description  Merge the State of MyBooks into Searched Books.
      */
-    filterResults = (searchedBooks) => {
-        if (this.props.myBooks && searchedBooks) {
-            return searchedBooks.filter((searchedBook) => {
-                for (let i = 0; i < this.props.myBooks.length; i++) {
-                    if (this.props.myBooks[i].id === searchedBook.id) {
-                        return false;
+    mergeMyBookStateWithResults = (searchedBooks) => {
+        //ES6 feature to cleanup the code.
+        const {myBooks} = this.props;
+
+        if (myBooks && searchedBooks) {
+            return searchedBooks.map((searchedBook) => {
+                myBooks.forEach((myBook) => {
+                    if (myBook.id === searchedBook.id) {
+                        searchedBook = myBook;
+                        return searchedBook;
                     }
-                }
-                return true;
+                });
+                return searchedBook;
             });
         } else {
             return searchedBooks;
         }
+
     };
 
     searchBook = (searchTerm) => {
         if (searchTerm && searchTerm.trim() !== '') {
             BooksAPI.search(searchTerm, 10).then((books) => {
                 if (books !== undefined && !books.hasOwnProperty("error")) {
-                    // Remove the book if already in UserShelve
-                    books = this.filterResults(books);
+                    books = this.mergeMyBookStateWithResults(books);
                     this.setState({newBooks: books});
                 }
             })
@@ -72,7 +76,6 @@ class BookSearch extends Component {
                 <div className="search-books-results">
                     <ol className="books-grid">
                         {this.state.newBooks.length > 0 && this.state.newBooks.map((book, index) => (
-
                             <Book
                                 key={index}
                                 title={book.title}
