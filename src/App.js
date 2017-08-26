@@ -35,6 +35,7 @@ class BooksApp extends Component {
                         myBooks={this.state.books}
                         onMoveToShelf={(book, shelf) => {
                             this.moveToShelf(book, shelf);
+                            history.push("/");
                         }}/>
                 )}/>
 

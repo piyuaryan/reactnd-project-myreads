@@ -51,15 +51,6 @@ class BookSearch extends Component {
         }
     };
 
-    /**
-     * @description Once the searched Book is moved to any of the users shelves, remove from the search results.
-     */
-    onMoveToShelf = (bookToBeMoved, shelf) => {
-        this.props.onMoveToShelf(bookToBeMoved, shelf);
-        this.setState({newBooks: this.state.newBooks.filter((book) => book.id !== bookToBeMoved.id)});
-
-    };
-
     render() {
         return (
             <div className="search-books">
@@ -89,7 +80,7 @@ class BookSearch extends Component {
                                 imageLinks={book.imageLinks}
                                 shelf={book.shelf ? book.shelf : "none"}
                                 onMoveToShelf={(shelf) => {
-                                    this.onMoveToShelf(book, shelf)
+                                    this.props.onMoveToShelf(book, shelf)
                                 }}/>
                         ))}
                     </ol>
