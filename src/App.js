@@ -4,15 +4,15 @@ import {Link, Route} from "react-router-dom";
 import * as BooksAPI from "./utils/BooksAPI";
 import BookList from "./components/BookList";
 import BookSearch from "./components/BookSearch";
-import {Alert, Button} from "react-bootstrap";
+import NotificationSystem from "react-notification-system";
 
 class BooksApp extends Component {
 
     state = {
-        books: [],
-        alertVisible: false,
-        alertText: ''
+        books: []
     };
+
+    notifier = null;
 
     shelves = {
         currentlyReading: "Currently Reading",
@@ -21,39 +21,34 @@ class BooksApp extends Component {
     };
 
     componentDidMount() {
-        this.fetchAllBooks()
+        this.fetchAllBooks();
+        this.notifier = this.refs.notification;
     }
 
     fetchAllBooks = () => {
         BooksAPI.getAll().then((books) => this.setState({books}))
     };
 
+    addNotification = (title, message, level) => {
+        this.notifier.addNotification({
+            title: title,
+            message: message,
+            level: level,
+            position: "tc"
+        });
+    };
+
     moveToShelf = (book, shelf) => {
         BooksAPI.update(book, shelf).then(() => {
-            this.setState({
-                alertText: `Book moved to ${this.shelves[shelf]}`
-            });
-            this.handleAlertShow();
+            this.addNotification("Wohoo!", `Book moved to ${this.shelves[shelf]}`, "success");
             this.fetchAllBooks();
         })
-    };
-
-    handleAlertDismiss = () => {
-        this.setState({alertVisible: false});
-    };
-
-    handleAlertShow = () => {
-        this.setState({alertVisible: true});
     };
 
     render() {
         return (
             <div className="app">
-                {this.state.alertVisible ? (
-                    <Alert bsStyle="success" closeLabel="close">
-                        <span>{this.state.alertText}   </span>
-                        <Button bsStyle="link" onClick={this.handleAlertDismiss}>&times;</Button>
-                    </Alert>) : ""}
+                <NotificationSystem ref="notification"/>
 
                 <Route path="/search" render={({history}) => (
                     <BookSearch
