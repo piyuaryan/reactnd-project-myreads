@@ -55,7 +55,7 @@ class BooksApp extends Component {
                         <Button bsStyle="link" onClick={this.handleAlertDismiss}>&times;</Button>
                     </Alert>) : ""}
 
-                <Route path="/create" render={({history}) => (
+                <Route path="/search" render={({history}) => (
                     <BookSearch
                         myBooks={this.state.books}
                         onMoveToShelf={(book, shelf) => {
@@ -78,7 +78,7 @@ class BooksApp extends Component {
 
                         <div className="open-search">
                             <Link
-                                to="/create">
+                                to="/search">
                                 Add a book
                             </Link>
                         </div>
